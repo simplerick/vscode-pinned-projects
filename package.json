@@ -1,0 +1,122 @@
+{
+  "name": "pinned-projects",
+  "version": "0.0.1",
+  "displayName": "Pinned Projects",
+  "description": "Pin your local projects to side bar for quick access",
+  "publisher": "simplerick",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "engines": {
+    "vscode": "^1.96.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "icon": "assets/icon.png",
+  "keywords": [
+    "pinned",
+    "favorites",
+    "projects",
+    "folders",
+    "workspace"
+  ],
+
+  "activationEvents": [],
+  "main": "./dist/extension.js",
+
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "pinned-projects",
+          "title": "Pinned Projects",
+          "icon": "assets/folder.svg"
+        }
+      ]
+    },
+    "views": {
+      "pinned-projects": [
+        {
+          "id": "projects",
+          "name": "Pinned Projects"
+        }
+      ]
+    },
+
+    "commands": [
+      {
+        "command": "projects.lock",
+        "title": "Pinned Projects: Lock",
+        "icon": "$(lock)"
+      },
+      {
+        "command": "projects.unlock",
+        "title": "Pinned Projects: Unlock",
+        "icon": "$(unlock)"
+      },
+      {
+        "command": "project.open",
+        "title": "Open in Current Window",
+        "icon": "$(folder-opened)"
+      },
+      {
+        "command": "project.openInNewWindow",
+        "title": "Open in New Window",
+        "icon": "$(empty-window)"
+      }
+    ],
+
+    "menus": {
+      "view/title": [
+        {
+          "command": "projects.lock",
+          "when": "view == projects",
+          "group": "navigation"
+        },
+        {
+          "command": "projects.unlock",
+          "when": "view == projects",
+          "group": "navigation@2"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "project.open",
+          "when": "view == projects",
+          "group": "inline"
+        },
+        {
+          "command": "project.openInNewWindow",
+          "when": "view == projects",
+          "group": "inline"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run package",
+    "compile": "npm run check-types && npm run lint && node esbuild.js",
+    "watch": "npm-run-all -p watch:*",
+    "watch:esbuild": "node esbuild.js --watch",
+    "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
+    "package": "npm run check-types && npm run lint && node esbuild.js --production",
+    "compile-tests": "tsc -p . --outDir out",
+    "watch-tests": "tsc -p . -w --outDir out",
+    "pretest": "npm run compile-tests && npm run compile && npm run lint",
+    "check-types": "tsc --noEmit",
+    "lint": "eslint src",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.96.0",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "20.x",
+    "@typescript-eslint/eslint-plugin": "^8.17.0",
+    "@typescript-eslint/parser": "^8.17.0",
+    "eslint": "^9.16.0",
+    "esbuild": "^0.24.0",
+    "npm-run-all": "^4.1.5",
+    "typescript": "^5.7.2",
+    "@vscode/test-cli": "^0.0.10",
+    "@vscode/test-electron": "^2.4.1"
+  }
+}
