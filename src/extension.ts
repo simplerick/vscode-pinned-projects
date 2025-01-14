@@ -70,11 +70,14 @@ export function activate(context: vscode.ExtensionContext) {
     // Toggle Drag and Drop
     vscode.commands.registerCommand("projects.lock", () => treeViewController.lock());
     vscode.commands.registerCommand("projects.unlock", () => treeViewController.unlock());
-    // Create New Group
-
-    // Add New Project
-    
+    // Rename
+    vscode.commands.registerCommand("item.rename", node => node.rename(tree));
+    // Add
+    vscode.commands.registerCommand("project.add", node => (node ?? tree.root).addChild("project", tree));
+    vscode.commands.registerCommand("group.add", node => (node ?? tree.root).addChild("group", tree));
+    // Delete
+    vscode.commands.registerCommand("item.remove", node => node.remove(tree));
     // Open Project
-    vscode.commands.registerCommand("project.open", treeItem => treeItem.openFolder());
-    vscode.commands.registerCommand("project.openInNewWindow", treeItem => treeItem.openFolder(true));    
+    vscode.commands.registerCommand("project.open", node => node.openFolder());
+    vscode.commands.registerCommand("project.openInNewWindow", node => node.openFolder(true));    
 }

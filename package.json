@@ -62,20 +62,48 @@
         "command": "project.openInNewWindow",
         "title": "Open in New Window",
         "icon": "$(empty-window)"
+      },
+      {
+        "command": "item.rename",
+        "title": "Rename"
+      },
+      {
+        "command": "project.add",
+        "title": "Add Project",
+        "icon": "$(new-folder)"
+      },
+      {
+        "command": "group.add",
+        "title": "Add Group",
+        "icon": "$(add)"
+      },
+      {
+        "command": "item.remove",
+        "title": "Remove"
       }
     ],
 
     "menus": {
       "view/title": [
         {
-          "command": "projects.lock",
+          "command": "project.add",
+          "when": "view == projects && !config.pinnedProjects.lock",
+          "group": "navigation@1"
+        },
+        {
+          "command": "group.add",
           "when": "view == projects && !config.pinnedProjects.lock",
           "group": "navigation@2"
         },
         {
+          "command": "projects.lock",
+          "when": "view == projects && !config.pinnedProjects.lock",
+          "group": "navigation@3"
+        },
+        {
           "command": "projects.unlock",
           "when": "view == projects && config.pinnedProjects.lock",
-          "group": "navigation@2"
+          "group": "navigation@3"
         }
       ],
       "view/item/context": [
@@ -87,10 +115,44 @@
         {
           "command": "project.openInNewWindow",
           "when": "view == projects && viewItem == project",
-          "group": "inline"
+          "group": "inline@2"
+        },
+        {
+          "submenu": "modify",
+          "when": "view == projects && !config.pinnedProjects.lock",
+          "group": "inline@3"
+        }
+      ],
+      "modify": [
+        {
+          "command": "item.rename",
+          "when": "view == projects && !config.pinnedProjects.lock",
+          "group": "modification@1"
+        },
+        {
+          "command": "project.add",
+          "when": "view == projects && viewItem == group && !config.pinnedProjects.lock",
+          "group": "modification@2"
+        },
+        {
+          "command": "group.add",
+          "when": "view == projects && viewItem == group && !config.pinnedProjects.lock",
+          "group": "modification@3"
+        },
+        {
+          "command": "item.remove",
+          "when": "view == projects && !config.pinnedProjects.lock",
+          "group": "modification@4"
         }
       ]
     },
+    "submenus": [
+      {
+        "id": "modify",
+        "label": "Change",
+        "icon": "$(ellipsis)"
+      }
+    ],
 
     "configuration": {
       "title": "Pinned Projects",

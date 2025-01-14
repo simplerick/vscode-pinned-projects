@@ -46,8 +46,21 @@ export class Tree extends TreeDragAndDropController implements vscode.TreeDataPr
         return element.parent;
     }
 
-	_buildNodes(nodeItem: any): TreeNode {
-		const {children = [], ...data} = nodeItem;
+	addNode(parent: TreeNode, nodeInfo: any) {
+		let node = new TreeNode(this.nodes.length, parent, [], nodeInfo);
+		this.nodes.push(node);
+		parent.children.push(node);
+		this.refresh(parent);
+	}
+
+	removeNode(node: TreeNode) {
+		const parent = node.parent; 
+		parent?.children.splice(parent.children.indexOf(node), 1);
+		this.refresh(parent);
+	}
+
+	_buildNodes(nodeInfo: any): TreeNode {
+		const {children = [], ...data} = nodeInfo;
 		let childNodes: TreeNode[] = children.map((child: any) => this._buildNodes(child));
         let id = this.nodes.length;
         let node = new TreeNode(id, undefined, childNodes, data);
@@ -56,8 +69,12 @@ export class Tree extends TreeDragAndDropController implements vscode.TreeDataPr
         return node;
     }
 
-	refresh(): void {
-		this._onDidChangeTreeData.fire();
+	refresh(node?: TreeNode): void {
+		if (!node?.parent) {
+			this._onDidChangeTreeData.fire(undefined);
+		} else {
+			this._onDidChangeTreeData.fire(node);
+		}	
 	}
 
     openSettings() {
