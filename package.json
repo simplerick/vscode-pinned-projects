@@ -1,6 +1,6 @@
 {
   "name": "pinned-projects",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "displayName": "Pinned Projects",
   "description": "Pin your local projects to side bar for quick access",
   "publisher": "simplerick",
@@ -27,14 +27,14 @@
     "viewsContainers": {
       "activitybar": [
         {
-          "id": "pinned-projects",
+          "id": "pinned",
           "title": "Pinned Projects",
           "icon": "assets/folder.svg"
         }
       ]
     },
     "views": {
-      "pinned-projects": [
+      "pinned": [
         {
           "id": "projects",
           "name": "Pinned Projects"
@@ -46,12 +46,12 @@
       {
         "command": "projects.lock",
         "title": "Pinned Projects: Lock",
-        "icon": "$(lock)"
+        "icon": "$(unlock)"
       },
       {
         "command": "projects.unlock",
         "title": "Pinned Projects: Unlock",
-        "icon": "$(unlock)"
+        "icon": "$(lock)"
       },
       {
         "command": "project.open",
@@ -69,12 +69,12 @@
       "view/title": [
         {
           "command": "projects.lock",
-          "when": "view == projects",
+          "when": "view == projects && !config.pinnedProjects.lock",
           "group": "navigation"
         },
         {
           "command": "projects.unlock",
-          "when": "view == projects",
+          "when": "view == projects && config.pinnedProjects.lock",
           "group": "navigation@2"
         }
       ],
@@ -90,6 +90,18 @@
           "group": "inline"
         }
       ]
+    },
+
+    "configuration": {
+      "title": "Pinned Projects",
+      "properties": {
+        "pinnedProjects.lock": {
+          "type": "boolean",
+          "default": false,
+          "description": "Prevents pinned projects from being modified",
+          "scope": "workspace"
+        }
+      }
     }
   },
   "scripts": {

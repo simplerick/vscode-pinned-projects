@@ -1,21 +1,29 @@
 import * as vscode from 'vscode';
 import { Tree } from './tree';
-import { TestViewDragAndDrop } from './testView';
 
 
 
 export class TreeViewController {
-    locked = false;
     view?: vscode.TreeView<any>;
     context: vscode.ExtensionContext;
     viewId: string;
     options: vscode.TreeViewOptions<any>;
-    
 
     constructor(context: vscode.ExtensionContext, viewId: string, options: vscode.TreeViewOptions<any>) {
         this.context = context;
         this.viewId = viewId;
         this.options = options;
+    }
+
+    // fetch locked state from config instead of using keeping it in memory
+    get locked() {
+        const config = vscode.workspace.getConfiguration('pinnedProjects');
+        return config.get('lock', false);
+    }
+
+    updateConfig(key: string, value: any) {
+        const config = vscode.workspace.getConfiguration('pinnedProjects');
+        config.update(key, value, vscode.ConfigurationTarget.Workspace);
     }
 
     createView(): vscode.TreeView<any> {
@@ -29,15 +37,15 @@ export class TreeViewController {
 
     lock() {
         if (!this.locked) {
-            this.locked = true;
-            this.view = this.createView();
+            this.updateConfig('lock', true);
+            // this.view = this.createView(true);
         }
     }
 
     unlock() {
         if (this.locked) {
-            this.locked = false;
-            this.view = this.createView();
+            this.updateConfig('lock', false);
+            // this.view = this.createView(false);
         }
     }
     
@@ -45,30 +53,28 @@ export class TreeViewController {
 
 
 export function activate(context: vscode.ExtensionContext) {
-	const extensionName = context.extension.packageJSON.name;
-
-    let projects = new Tree(context);
+    let tree = new Tree(context);
     const treeViewController = new TreeViewController(context, "projects", {
-        treeDataProvider: projects,
+        treeDataProvider: tree,
         showCollapseAll: false, 
         canSelectMany: true, 
-        dragAndDropController: projects,
+        dragAndDropController: tree,
     });
     treeViewController.createView();
+    vscode.workspace.onDidChangeConfiguration(event => {
+        if (event.affectsConfiguration('pinnedProjects.lock')) {
+            treeViewController.createView();
+        }
+    });
 
     // Toggle Drag and Drop
     vscode.commands.registerCommand("projects.lock", () => treeViewController.lock());
     vscode.commands.registerCommand("projects.unlock", () => treeViewController.unlock());
+    // Create New Group
 
-
-    // treeView.onDidCollapseElement(e => {
-    //     saveCollapsibleState(context, e.element.collapsibleId, vscode.TreeItemCollapsibleState.Collapsed)
-    // })
-    // treeView.onDidExpandElement(e => {
-    //     saveCollapsibleState(context, e.element.collapsibleId, vscode.TreeItemCollapsibleState.Expanded)
-    // })
-	// vscode.commands.registerCommand("projects.resfresh", () => vscode.window.showInformationMessage(extensionName));
-    // vscode.commands.registerCommand("projects.openSettings", () => projects.openSettings());
-    // vscode.commands.registerCommand("project.open", treeItem => treeItem.openFolder());
-    // vscode.commands.registerCommand("project.openInNewWindow", treeItem => treeItem.openFolder(true));
+    // Add New Project
+    
+    // Open Project
+    vscode.commands.registerCommand("project.open", treeItem => treeItem.openFolder());
+    vscode.commands.registerCommand("project.openInNewWindow", treeItem => treeItem.openFolder(true));    
 }
