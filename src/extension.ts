@@ -32,6 +32,12 @@ export class TreeViewController {
             dragAndDropController: this.locked ? undefined : this.options.dragAndDropController,
         };
         this.view = vscode.window.createTreeView(this.viewId, options);
+        this.view.onDidCollapseElement(e => {
+            e.element.data.collapseState = vscode.TreeItemCollapsibleState.Collapsed;
+        });
+        this.view.onDidExpandElement(e => {
+            e.element.data.collapseState = vscode.TreeItemCollapsibleState.Expanded;
+        });
         return this.view;
     }
 

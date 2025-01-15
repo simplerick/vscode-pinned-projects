@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { TreeNode } from './treeNode';
+import { TreeNode, Project, Group } from './treeNode';
 
 
 export abstract class TreeDragAndDropController implements vscode.TreeDragAndDropController<TreeNode> {
@@ -39,15 +39,26 @@ export abstract class TreeDragAndDropController implements vscode.TreeDragAndDro
                 }
                 targetCheck = targetCheck.parent;
             }
-            // target is a Node -> put the selected nodes before the target node
-            let targetParent = target.parent!;
-            let targetIndex = targetParent.children.indexOf(target);
-            for (let node of nodes) {
-                let parent = node.parent!;
-                parent.children.splice(parent.children.indexOf(node), 1);
-                node.parent = targetParent;
+            // target is a Node 
+            if (target.data instanceof Group && target.data.collapseState === vscode.TreeItemCollapsibleState.Expanded) {
+                // if it's a group in expanded state -> put the selected nodes to the end of the target node children
+                for (let node of nodes) {
+                    let parent = node.parent!;
+                    parent.children.splice(parent.children.indexOf(node), 1);
+                    node.parent = target;
+                }
+                target.children.push(...nodes);
+            } else {
+                // if it's a project or a group in collapsed state -> put the selected nodes before the target node
+                let targetParent = target.parent!;
+                let targetIndex = targetParent.children.indexOf(target);
+                for (let node of nodes) {
+                    let parent = node.parent!;
+                    parent.children.splice(parent.children.indexOf(node), 1);
+                    node.parent = targetParent;
+                }
+                targetParent.children.splice(targetIndex, 0, ...nodes);
             }
-            targetParent.children.splice(targetIndex, 0, ...nodes);
         }
 
         this._onDidChangeTreeData.fire(undefined);

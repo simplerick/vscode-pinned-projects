@@ -1,6 +1,6 @@
 {
   "name": "pinned-projects",
-  "version": "0.0.3",
+  "version": "0.0.5",
   "displayName": "Pinned Projects",
   "description": "Pin your local projects to side bar for quick access",
   "publisher": "simplerick",
@@ -160,7 +160,7 @@
         "pinnedProjects.lock": {
           "type": "boolean",
           "default": false,
-          "description": "Prevents pinned projects from being modified",
+          "description": "Prevents pinned projects from being modified.",
           "scope": "workspace"
         }
       }

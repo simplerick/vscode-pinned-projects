@@ -75,6 +75,7 @@ export class Group extends vscode.TreeItem {
 	// resourceUri = vscode.Uri.parse('_.js');
 	// iconPath = path.join(__filename, '..', '..', 'assets', 'group.svg');
 	contextValue?: string;
+	collapseState?: vscode.TreeItemCollapsibleState;
 
 	constructor(public label: string,
 				public collapsibleState?: vscode.TreeItemCollapsibleState,
@@ -83,6 +84,7 @@ export class Group extends vscode.TreeItem {
 	) {
 		super(label, collapsibleState);
 		this.contextValue = type;
+		this.collapseState = this.collapsibleState;
 		// this.tooltip = description;
 	}
 }
