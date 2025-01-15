@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { TreeNode } from './treeNode';
+import { TreeNode, Group, Project } from './treeNode';
 import { TreeDragAndDropController } from './treeDragAndDropController';
 
 
@@ -10,25 +10,39 @@ export class Tree extends TreeDragAndDropController implements vscode.TreeDataPr
 	root: TreeNode;
     nodes: TreeNode[] = [];
 
-	public exampleTree: any = [
-		{"type": "group", "name": "Group 1", "children": [
-			{"type": "project", "name": "Project 1", "absolutePath": "/Users/simple/Code/mac-setup"},
-			{"type": "group", "name": "Group 2", "children": [
-				{"type": "project", "name": "Project 2", "absolutePath": "/wrong-path"},
-			]},
-		]},
-		{"type": "group", "name": "Group 3", "children": [
-			{"type": "project", "name": "Project 1", "absolutePath": "/Users/simple/Code/mac-setup"},
-			{"type": "group", "name": "Group 2", "children": [
-				{"type": "project", "name": "Project 4", "absolutePath": "/wrong-path"},
-			]},
-		]}
-	];
-
 	constructor(private extensionContext: vscode.ExtensionContext) {
 		super();
-		this.root = this._buildNodes({type: "root", children: this.exampleTree});
 		this.extensionContext = extensionContext;
+		let tree = extensionContext.globalState.get("tree");
+		this.root = this.parse({type: "root", children: tree});
+	}
+
+	private parse(nodeInfo: any): TreeNode {
+		const {children = [], ...data} = nodeInfo;
+		let childNodes: TreeNode[] = children.map((child: any) => this.parse(child));
+        let id = this.nodes.length;
+        let node = new TreeNode(id, undefined, childNodes, data);
+		childNodes.forEach(child => child.parent = node);
+		this.nodes.push(node);
+        return node;
+    }
+
+	private serialize(node: TreeNode): any {
+		let children = node.children.map(child => this.serialize(child));
+		if (node === this.root) {
+			return children;
+		}
+		if (node.data instanceof Group) {
+			return {type: node.data.contextValue, name: node.data.label, collapsibleState: node.data.collapsibleState, children: children};
+		}
+		if (node.data instanceof Project) {
+			return {type: node.data.contextValue, name: node.data.label, absolutePath: node.data.absolutePath};
+		}
+	}
+
+	sync() {
+		let serializedTree = this.serialize(this.root);
+		this.extensionContext.globalState.update("tree", serializedTree);
 	}
 
 	getTreeItem(element: TreeNode): vscode.TreeItem {
@@ -59,22 +73,13 @@ export class Tree extends TreeDragAndDropController implements vscode.TreeDataPr
 		this.refresh(parent);
 	}
 
-	_buildNodes(nodeInfo: any): TreeNode {
-		const {children = [], ...data} = nodeInfo;
-		let childNodes: TreeNode[] = children.map((child: any) => this._buildNodes(child));
-        let id = this.nodes.length;
-        let node = new TreeNode(id, undefined, childNodes, data);
-		childNodes.forEach(child => child.parent = node);
-		this.nodes.push(node);
-        return node;
-    }
-
 	refresh(node?: TreeNode): void {
 		if (!node?.parent) {
 			this._onDidChangeTreeData.fire(undefined);
 		} else {
 			this._onDidChangeTreeData.fire(node);
-		}	
+		}
+		this.sync();
 	}
 
     openSettings() {

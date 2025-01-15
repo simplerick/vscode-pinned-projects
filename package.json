@@ -1,6 +1,6 @@
 {
   "name": "pinned-projects",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "displayName": "Pinned Projects",
   "description": "Pin your local projects to side bar for quick access",
   "publisher": "simplerick",
@@ -54,6 +54,16 @@
         "icon": "$(lock)"
       },
       {
+        "command": "projects.addProject",
+        "title": "Add Project",
+        "icon": "$(new-folder)"
+      },
+      {
+        "command": "projects.addGroup",
+        "title": "Add Group",
+        "icon": "$(add)"
+      },
+      {
         "command": "project.open",
         "title": "Open in Current Window",
         "icon": "$(folder-opened)"
@@ -69,13 +79,11 @@
       },
       {
         "command": "project.add",
-        "title": "Add Project",
-        "icon": "$(new-folder)"
+        "title": "Add Project"
       },
       {
         "command": "group.add",
-        "title": "Add Group",
-        "icon": "$(add)"
+        "title": "Add Group"
       },
       {
         "command": "item.remove",
@@ -86,12 +94,12 @@
     "menus": {
       "view/title": [
         {
-          "command": "project.add",
+          "command": "projects.addProject",
           "when": "view == projects && !config.pinnedProjects.lock",
           "group": "navigation@1"
         },
         {
-          "command": "group.add",
+          "command": "projects.addGroup",
           "when": "view == projects && !config.pinnedProjects.lock",
           "group": "navigation@2"
         },

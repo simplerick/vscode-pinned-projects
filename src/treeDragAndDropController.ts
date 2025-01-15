@@ -40,7 +40,7 @@ export abstract class TreeDragAndDropController implements vscode.TreeDragAndDro
                 targetCheck = targetCheck.parent;
             }
             // target is a Node 
-            if (target.data instanceof Group && target.data.collapseState === vscode.TreeItemCollapsibleState.Expanded) {
+            if (target.data instanceof Group && target.data.collapsibleState === vscode.TreeItemCollapsibleState.Expanded) {
                 // if it's a group in expanded state -> put the selected nodes to the end of the target node children
                 for (let node of nodes) {
                     let parent = node.parent!;

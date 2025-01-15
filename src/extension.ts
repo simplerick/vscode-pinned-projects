@@ -33,10 +33,12 @@ export class TreeViewController {
         };
         this.view = vscode.window.createTreeView(this.viewId, options);
         this.view.onDidCollapseElement(e => {
-            e.element.data.collapseState = vscode.TreeItemCollapsibleState.Collapsed;
+            e.element.data.collapsibleState = vscode.TreeItemCollapsibleState.Collapsed;
+            (this.options.treeDataProvider as Tree).sync();
         });
         this.view.onDidExpandElement(e => {
-            e.element.data.collapseState = vscode.TreeItemCollapsibleState.Expanded;
+            e.element.data.collapsibleState = vscode.TreeItemCollapsibleState.Expanded;
+            (this.options.treeDataProvider as Tree).sync();
         });
         return this.view;
     }
@@ -76,11 +78,14 @@ export function activate(context: vscode.ExtensionContext) {
     // Toggle Drag and Drop
     vscode.commands.registerCommand("projects.lock", () => treeViewController.lock());
     vscode.commands.registerCommand("projects.unlock", () => treeViewController.unlock());
+    // Add from title
+    vscode.commands.registerCommand("projects.addProject", () => tree.root.addChild("project", tree));
+    vscode.commands.registerCommand("projects.addGroup", () => tree.root.addChild("group", tree));
     // Rename
     vscode.commands.registerCommand("item.rename", node => node.rename(tree));
     // Add
-    vscode.commands.registerCommand("project.add", node => (node ?? tree.root).addChild("project", tree));
-    vscode.commands.registerCommand("group.add", node => (node ?? tree.root).addChild("group", tree));
+    vscode.commands.registerCommand("project.add", node => node.addChild("project", tree));
+    vscode.commands.registerCommand("group.add", node => node.addChild("group", tree));
     // Delete
     vscode.commands.registerCommand("item.remove", node => node.remove(tree));
     // Open Project

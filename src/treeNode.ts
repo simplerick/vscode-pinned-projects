@@ -19,11 +19,11 @@ export class TreeNode {
 
 	parseTreeItem(data: any): Group | Project {
 		// const stringId = String(id);
-		const {type, name, absolutePath, description, ..._} = data;
+		const {type, name, absolutePath, description, collapsibleState, ..._} = data;
 
 		switch (type) { 
 			case "group":
-				return new Group(name, vscode.TreeItemCollapsibleState.Collapsed, type);
+				return new Group(name, collapsibleState ?? vscode.TreeItemCollapsibleState.Collapsed, type);
 			case "project":
 				return new Project(absolutePath, name, description, type);
 			case "root":
@@ -75,7 +75,6 @@ export class Group extends vscode.TreeItem {
 	// resourceUri = vscode.Uri.parse('_.js');
 	// iconPath = path.join(__filename, '..', '..', 'assets', 'group.svg');
 	contextValue?: string;
-	collapseState?: vscode.TreeItemCollapsibleState;
 
 	constructor(public label: string,
 				public collapsibleState?: vscode.TreeItemCollapsibleState,
@@ -84,7 +83,6 @@ export class Group extends vscode.TreeItem {
 	) {
 		super(label, collapsibleState);
 		this.contextValue = type;
-		this.collapseState = this.collapsibleState;
 		// this.tooltip = description;
 	}
 }
