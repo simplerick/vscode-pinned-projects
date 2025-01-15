@@ -1,63 +1,7 @@
 import * as vscode from 'vscode';
 import { Tree } from './tree';
+import { TreeViewController } from './treeViewController';
 
-
-
-export class TreeViewController {
-    view?: vscode.TreeView<any>;
-    context: vscode.ExtensionContext;
-    viewId: string;
-    options: vscode.TreeViewOptions<any>;
-
-    constructor(context: vscode.ExtensionContext, viewId: string, options: vscode.TreeViewOptions<any>) {
-        this.context = context;
-        this.viewId = viewId;
-        this.options = options;
-    }
-
-    // fetch locked state from config instead of using keeping it in memory
-    get locked() {
-        const config = vscode.workspace.getConfiguration('pinnedProjects');
-        return config.get('lock', false);
-    }
-
-    updateConfig(key: string, value: any) {
-        const config = vscode.workspace.getConfiguration('pinnedProjects');
-        config.update(key, value, vscode.ConfigurationTarget.Workspace);
-    }
-
-    createView(): vscode.TreeView<any> {
-        const options = {
-            ...this.options, 
-            dragAndDropController: this.locked ? undefined : this.options.dragAndDropController,
-        };
-        this.view = vscode.window.createTreeView(this.viewId, options);
-        this.view.onDidCollapseElement(e => {
-            e.element.data.collapsibleState = vscode.TreeItemCollapsibleState.Collapsed;
-            (this.options.treeDataProvider as Tree).sync();
-        });
-        this.view.onDidExpandElement(e => {
-            e.element.data.collapsibleState = vscode.TreeItemCollapsibleState.Expanded;
-            (this.options.treeDataProvider as Tree).sync();
-        });
-        return this.view;
-    }
-
-    lock() {
-        if (!this.locked) {
-            this.updateConfig('lock', true);
-            // this.view = this.createView(true);
-        }
-    }
-
-    unlock() {
-        if (this.locked) {
-            this.updateConfig('lock', false);
-            // this.view = this.createView(false);
-        }
-    }
-    
-}
 
 
 export function activate(context: vscode.ExtensionContext) {
@@ -75,19 +19,35 @@ export function activate(context: vscode.ExtensionContext) {
         }
     });
 
+    function addProject(parent: any) {
+        vscode.window.showOpenDialog({
+            canSelectFiles: false, canSelectFolders: true, canSelectMany: false
+        }).then(uri => {
+            if (uri) {
+                let newNode = tree.addNode(parent, {type: "project", absolutePath: uri[0].fsPath});
+                if (newNode) {treeViewController.view?.reveal(newNode);}
+            }
+        });
+    }
+
+    function addGroup(parent: any) { 
+        let newNode = tree.addNode(parent, {type: "group", name: "New Group"});
+        if (newNode) {treeViewController.view?.reveal(newNode);}
+    }
+
     // Toggle Drag and Drop
     vscode.commands.registerCommand("projects.lock", () => treeViewController.lock());
     vscode.commands.registerCommand("projects.unlock", () => treeViewController.unlock());
     // Add from title
-    vscode.commands.registerCommand("projects.addProject", () => tree.root.addChild("project", tree));
-    vscode.commands.registerCommand("projects.addGroup", () => tree.root.addChild("group", tree));
+    vscode.commands.registerCommand("projects.addProject", () => addProject(tree.root));
+    vscode.commands.registerCommand("projects.addGroup", () => addGroup(tree.root));
     // Rename
     vscode.commands.registerCommand("item.rename", node => node.rename(tree));
     // Add
-    vscode.commands.registerCommand("project.add", node => node.addChild("project", tree));
-    vscode.commands.registerCommand("group.add", node => node.addChild("group", tree));
+    vscode.commands.registerCommand("project.add", node => addProject(node));
+    vscode.commands.registerCommand("group.add", node => addGroup(node));
     // Delete
-    vscode.commands.registerCommand("item.remove", node => node.remove(tree));
+    vscode.commands.registerCommand("item.remove", node => tree.removeNode(node));
     // Open Project
     vscode.commands.registerCommand("project.open", node => node.openFolder());
     vscode.commands.registerCommand("project.openInNewWindow", node => node.openFolder(true));    

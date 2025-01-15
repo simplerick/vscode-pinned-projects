@@ -44,30 +44,12 @@ export class TreeNode {
 			prompt: "Enter a new name",
 			value: this.data.label,
 		}).then((newName) => {
-			this.data.label = newName;
-			provider.refresh(this);
+			if (newName) {
+				this.data.label = newName;
+				provider.refresh(this);
+			}
 		});
 	}
-
-	addChild(type: string, provider: any) {
-		if (type === "group") {
-			provider.addNode(this, {type: "group", name: "New Group"});
-		}
-		if (type === "project") {
-			vscode.window.showOpenDialog({
-				canSelectFiles: false, canSelectFolders: true, canSelectMany: false
-			}).then(uri => {
-				if (uri) {
-					provider.addNode(this, {type: "project", absolutePath: uri[0].fsPath});
-				}
-			});
-		}
-	}
-
-	remove(provider: any) {
-		provider.removeNode(this);
-	}
-
 }
 
 

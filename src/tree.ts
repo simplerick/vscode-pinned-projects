@@ -60,11 +60,12 @@ export class Tree extends TreeDragAndDropController implements vscode.TreeDataPr
         return element.parent;
     }
 
-	addNode(parent: TreeNode, nodeInfo: any) {
+	addNode(parent: TreeNode, nodeInfo: any): TreeNode {
 		let node = new TreeNode(this.nodes.length, parent, [], nodeInfo);
 		this.nodes.push(node);
 		parent.children.push(node);
 		this.refresh(parent);
+		return node;
 	}
 
 	removeNode(node: TreeNode) {
@@ -74,7 +75,7 @@ export class Tree extends TreeDragAndDropController implements vscode.TreeDataPr
 	}
 
 	refresh(node?: TreeNode): void {
-		if (!node?.parent) {
+		if (node === this.root) {
 			this._onDidChangeTreeData.fire(undefined);
 		} else {
 			this._onDidChangeTreeData.fire(node);
