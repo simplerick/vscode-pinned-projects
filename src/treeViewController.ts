@@ -7,12 +7,12 @@ export class TreeViewController {
     view?: vscode.TreeView<any>;
     context: vscode.ExtensionContext;
     viewId: string;
-    options: vscode.TreeViewOptions<any>;
+    tree: Tree;
 
-    constructor(context: vscode.ExtensionContext, viewId: string, options: vscode.TreeViewOptions<any>) {
+    constructor(context: vscode.ExtensionContext, viewId: string, tree: Tree) {
         this.context = context;
         this.viewId = viewId;
-        this.options = options;
+        this.tree = tree;
     }
 
     // fetch locked state from config instead of using keeping it in memory
@@ -27,22 +27,23 @@ export class TreeViewController {
     }
 
     createView(): vscode.TreeView<any> {
+        if (this.view) {
+            this.tree = new Tree(this.context, this.tree.root,  this.tree.nodes);
+        }
         const options = {
-            ...this.options, 
-            dragAndDropController: this.locked ? undefined : this.options.dragAndDropController,
+            treeDataProvider: this.tree,
+            showCollapseAll: false, 
+            canSelectMany: true,
+            dragAndDropController: this.locked ? undefined : this.tree,
         };
         this.view = vscode.window.createTreeView(this.viewId, options);
         this.view.onDidCollapseElement(e => {
             e.element.data.collapsibleState = vscode.TreeItemCollapsibleState.Collapsed;
-            if (!this.locked) {
-                (this.options.treeDataProvider as Tree).sync();
-            }
+            this.tree.sync();
         });
         this.view.onDidExpandElement(e => {
             e.element.data.collapsibleState = vscode.TreeItemCollapsibleState.Expanded;
-            if (!this.locked) {
-                (this.options.treeDataProvider as Tree).sync();
-            }
+            this.tree.sync();
         });
         return this.view;
     }

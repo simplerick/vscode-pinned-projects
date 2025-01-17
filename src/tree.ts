@@ -10,11 +10,16 @@ export class Tree extends TreeDragAndDropController implements vscode.TreeDataPr
 	root: TreeNode;
     nodes: TreeNode[] = [];
 
-	constructor(private extensionContext: vscode.ExtensionContext) {
+	constructor(private extensionContext: vscode.ExtensionContext, root?: TreeNode, nodes?: TreeNode[]) {
 		super();
 		this.extensionContext = extensionContext;
-		let tree = extensionContext.globalState.get("tree");
-		this.root = this.parse({type: "root", children: tree});
+		if (root && nodes) {
+			this.root = root;
+			this.nodes = nodes;
+		} else {
+			let tree = extensionContext.globalState.get("tree");
+			this.root = this.parse({type: "root", children: tree});
+		}
 	}
 
 	private parse(nodeInfo: any): TreeNode {
