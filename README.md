@@ -1,15 +1,30 @@
-# Pinned Projects
-
-A Visual Studio Code extension that allows to pin favorite projects to side bar for quick access.
+# [Pinned Projects](https://marketplace.visualstudio.com/items?itemName=simplerick.pinned-projects)
 
 
-## Screenshots
+The Pinned Projects extension adds the ability to pin favorite projects to the sidebar tab for quick access.
 
+<br>
 
+## Features
 
-## Extension Settings
+### Favorite Projects Tree
 
-This extension contributes the following settings:
+Add your favorite projects and then open any pinned folder with a single click, either in the current window or a new one. You can organize your projects as a tree with arbitrary depth using "groups".
+<img src="media/pinned-projects-add-open.png">
 
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
+### Easy Configuration 
+
+There's no need to open settings to configure your projects — all modifications can be done natively in the tree view.
+
+- Rearrange and nest items using drag-and-drop actions.
+- Rename, delete groups and projects, and add new ones.
+<img src="media/pinned-projects-drag-and-drop-add.png">
+
+<br>
+
+To prevent accidental changes, you can lock the tree state with a toggle. This state is synchronized with the only settings option: `pinnedProjects.lock`.
+<img src="media/pinned-projects-unlock-settings.png">
+
+## License
+
+[MIT](LICENSE.md)

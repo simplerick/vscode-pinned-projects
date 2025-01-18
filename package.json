@@ -1,6 +1,6 @@
 {
   "name": "pinned-projects",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "displayName": "Pinned Projects",
   "description": "Pin your local projects to side bar for quick access",
   "publisher": "simplerick",
@@ -12,6 +12,10 @@
     "Other"
   ],
   "icon": "assets/icon.png",
+  "galleryBanner": {
+    "color": "#333843",
+    "theme": "dark"
+  },
   "keywords": [
     "pinned",
     "favorites",
@@ -19,6 +23,15 @@
     "folders",
     "workspace"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/simplerick/vscode-pinned-projects/"
+  },
+  "homepage": "https://github.com/simplerick/vscode-pinned-projects/blob/main/README.md",
+  "bugs": {
+    "url": "https://github.com/simplerick/vscode-pinned-projects/issues"
+  },
+
 
   "activationEvents": [],
   "main": "./dist/extension.js",
@@ -41,7 +54,6 @@
         }
       ]
     },
-
     "commands": [
       {
         "command": "projects.lock",
@@ -90,7 +102,6 @@
         "title": "Remove"
       }
     ],
-
     "menus": {
       "view/title": [
         {
@@ -161,7 +172,6 @@
         "icon": "$(ellipsis)"
       }
     ],
-
     "configuration": {
       "title": "Pinned Projects",
       "properties": {
@@ -189,16 +199,16 @@
     "test": "vscode-test"
   },
   "devDependencies": {
-    "@types/vscode": "^1.96.0",
     "@types/mocha": "^10.0.10",
     "@types/node": "20.x",
+    "@types/vscode": "^1.96.0",
     "@typescript-eslint/eslint-plugin": "^8.17.0",
     "@typescript-eslint/parser": "^8.17.0",
-    "eslint": "^9.16.0",
-    "esbuild": "^0.24.0",
-    "npm-run-all": "^4.1.5",
-    "typescript": "^5.7.2",
     "@vscode/test-cli": "^0.0.10",
-    "@vscode/test-electron": "^2.4.1"
+    "@vscode/test-electron": "^2.4.1",
+    "esbuild": "^0.24.0",
+    "eslint": "^9.16.0",
+    "npm-run-all": "^4.1.5",
+    "typescript": "^5.7.2"
   }
 }

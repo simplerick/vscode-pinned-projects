@@ -23,7 +23,10 @@ export class TreeViewController {
 
     updateConfig(key: string, value: any) {
         const config = vscode.workspace.getConfiguration('pinnedProjects');
-        config.update(key, value, vscode.ConfigurationTarget.Workspace);
+        // if workspace config is not available, update config in global state
+        config.update(key, value, vscode.ConfigurationTarget.Workspace).then(undefined, () => {
+            config.update(key, value, vscode.ConfigurationTarget.Global);
+        });
     }
 
     createView(): vscode.TreeView<any> {
