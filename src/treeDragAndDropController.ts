@@ -8,8 +8,7 @@ export abstract class TreeDragAndDropController implements vscode.TreeDragAndDro
 
     protected abstract root: TreeNode;
     protected abstract nodes: TreeNode[];
-    protected abstract _onDidChangeTreeData: vscode.EventEmitter<TreeNode | undefined | void>;
-    protected abstract onDidChangeTreeData: vscode.Event<TreeNode | undefined | void>;
+    protected abstract refresh(node?: TreeNode): void;
 
     // Reordering
     public async handleDrop(target: TreeNode | undefined, sources: vscode.DataTransfer, _token: vscode.CancellationToken): Promise<void> {
@@ -61,7 +60,7 @@ export abstract class TreeDragAndDropController implements vscode.TreeDragAndDro
             }
         }
 
-        this._onDidChangeTreeData.fire(undefined);
+        this.refresh(undefined);
     }
 
     public async handleDrag(source: TreeNode[], treeDataTransfer: vscode.DataTransfer, _token: vscode.CancellationToken): Promise<void> {

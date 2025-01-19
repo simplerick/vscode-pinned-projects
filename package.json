@@ -1,6 +1,6 @@
 {
   "name": "pinned-projects",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "displayName": "Pinned Projects",
   "description": "Pin your local projects to side bar for quick access",
   "publisher": "simplerick",
@@ -13,7 +13,7 @@
   ],
   "icon": "assets/icon.png",
   "galleryBanner": {
-    "color": "#333843",
+    "color": "#1f242e",
     "theme": "dark"
   },
   "keywords": [
@@ -25,7 +25,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/simplerick/vscode-pinned-projects/"
+    "url": "https://github.com/simplerick/vscode-pinned-projects"
   },
   "homepage": "https://github.com/simplerick/vscode-pinned-projects/blob/main/README.md",
   "bugs": {

@@ -1,6 +1,14 @@
 # Change Log
 
 
+## [0.0.10] - 2025-01-19
+### Fixed
+- Bug: Not syncing when reordering
+### Improved
+- README.md
+- Icon colors
+
+
 ## [0.0.9] - 2025-01-19
 ### Added
 - Screenshots
