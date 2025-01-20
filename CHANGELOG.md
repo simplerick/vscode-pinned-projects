@@ -1,6 +1,13 @@
 # Change Log
 
 
+## [0.1.0] - 2025-01-20
+### Released
+- Publish to VS marketplace
+### Added
+- Workflow to automatically publish
+
+
 ## [0.0.10] - 2025-01-19
 ### Fixed
 - Bug: Not syncing when reordering
