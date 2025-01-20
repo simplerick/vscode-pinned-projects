@@ -1,0 +1,19 @@
+name: Publish VS Code Extension
+
+on:
+  push:
+    tags:
+      - v*
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Publish Extension
+        uses: ./.github/actions/publish-vscode-extension
+        with:
+          publisher: simplerick
+          token: ${{ secrets.VS_MARKETPLACE_TOKEN }}

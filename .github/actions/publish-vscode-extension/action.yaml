@@ -1,0 +1,36 @@
+name: Package and Publish VS Code Extension
+description: Packages and publishes a VS Code extension to the VS Marketplace
+
+inputs:
+  publisher:
+    description: "The publisher ID for VS Marketplace"
+    required: true
+  token:
+    description: "The VS Marketplace token"
+    required: true
+
+runs:
+  using: "composite"
+  
+  steps:
+    - name: Installing Dependencies
+      shell: bash
+      run: |
+        npm install
+        npm install -g vsce
+    
+    - name: Info
+      shell: bash
+      run: |
+        vsce verify-pat "${{ inputs.publisher }}" --pat "${{ inputs.token }}"
+        echo "Publisher: ${{ inputs.publisher }}"
+
+    - name: Packaging Extension
+      shell: bash
+      run: |
+        vsce package
+
+    - name: Publishing Extension
+      shell: bash
+      run: |
+        vsce publish --pat "${{ inputs.token }}"
