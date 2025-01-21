@@ -1,7 +1,6 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
-import { allowedNodeEnvironmentFlags } from 'process';
 
 
 export class TreeNode {
@@ -83,7 +82,7 @@ export class Project extends vscode.TreeItem {
 		type?: string
 	) {
 		// if label is not given take stem of absolutePath
-		label = label || absolutePath.split('/').pop()!;
+		label = label || path.basename(absolutePath);
 		super(label, vscode.TreeItemCollapsibleState.None);
         this.absolutePath = this.checkPath(absolutePath);
 		this.tooltip = `${this.absolutePath}`;

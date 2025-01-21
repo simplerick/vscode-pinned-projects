@@ -1,12 +1,15 @@
 # Change Log
 
 
+## [0.1.1] - 2025-01-21
+### Fixed
+- Bug with full path as project title in Windows
+
 ## [0.1.0] - 2025-01-20
 ### Released
 - Publish to VS marketplace
 ### Added
 - Workflow to automatically publish
-
 
 ## [0.0.10] - 2025-01-19
 ### Fixed
@@ -15,7 +18,6 @@
 - README.md
 - Icon colors
 
-
 ## [0.0.9] - 2025-01-19
 ### Added
 - Screenshots
@@ -23,7 +25,6 @@
 - Use settings global scope if no workspace is open
 - README.md
 - CHANGELOG.md
-
 
 ## [0.0.8] - 2025-01-17
 ### Fixed
