@@ -1,6 +1,10 @@
 # Change Log
 
 
+## Unreleased
+### Added
+- Workflow for publishing to OpenVSX 
+
 ## [0.1.1] - 2025-01-21
 ### Fixed
 - Bug with full path as project title in Windows

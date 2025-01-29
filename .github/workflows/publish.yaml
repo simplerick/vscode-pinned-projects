@@ -17,3 +17,4 @@ jobs:
         with:
           publisher: simplerick
           token: ${{ secrets.VS_MARKETPLACE_TOKEN }}
+          ovsx_token: ${{ secrets.OPEN_VSX_TOKEN }}

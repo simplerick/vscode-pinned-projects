@@ -22,6 +22,9 @@ There's no need to open settings to configure your projects — all modification
 
 <img src="media/pinned-projects-drag-and-drop-add.png">
 
+> **Tip**:
+> *Dragging an item onto a project or a collapsed group will move it to the position of the specified element, while dragging it onto an expanded group will place the item inside that group.*
+
 <br>
 
 To prevent accidental changes, you can lock the tree state with a toggle. This state is synchronized with the only settings option: `pinnedProjects.lock`.

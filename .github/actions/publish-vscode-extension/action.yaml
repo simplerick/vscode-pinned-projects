@@ -8,6 +8,9 @@ inputs:
   token:
     description: "The VS Marketplace token"
     required: true
+  ovsx_token:
+    description: "The Open VSX registry token"
+    required: true
 
 runs:
   using: "composite"
@@ -17,7 +20,7 @@ runs:
       shell: bash
       run: |
         npm install
-        npm install -g vsce
+        npm install -g vsce ovsx
     
     - name: Info
       shell: bash
@@ -30,7 +33,12 @@ runs:
       run: |
         vsce package
 
-    - name: Publishing Extension
+    - name: Publishing Extension to VS marketplace
       shell: bash
       run: |
         vsce publish --pat "${{ inputs.token }}"
+
+    - name: Publishing Extension to Open VSX
+      shell: bash
+      run: |
+        ovsx publish "$(ls *.vsix)"  -p "${{ inputs.ovsx_token }}"
