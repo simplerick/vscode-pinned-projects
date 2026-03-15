@@ -1,8 +1,9 @@
 # Change Log
 
 
-## Unreleased
+## [0.1.2] - 2026-05-04
 ### Added
+- Opening Groups as multi-folder workspace
 - Workflow for publishing to OpenVSX 
 
 ## [0.1.1] - 2025-01-21

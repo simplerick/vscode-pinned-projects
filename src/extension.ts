@@ -1,6 +1,8 @@
 import * as vscode from 'vscode';
+import * as fs from 'fs';
 import { Tree } from './tree';
 import { TreeViewController } from './treeViewController';
+import * as msg from './informationMessages';
 
 
 
@@ -12,6 +14,9 @@ export function activate(context: vscode.ExtensionContext) {
             treeViewController.createView();
         }
     });
+
+    let workspaceStoragePath = context.globalStorageUri.fsPath;
+    fs.mkdirSync(workspaceStoragePath, { recursive: true });
 
     function addProject(parent: any) {
         vscode.window.showOpenDialog({
@@ -42,7 +47,9 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.commands.registerCommand("group.add", node => addGroup(node));
     // Delete
     vscode.commands.registerCommand("item.remove", node => treeViewController.tree.removeNode(node));
-    // Open Project
-    vscode.commands.registerCommand("project.open", node => node.openFolder());
-    vscode.commands.registerCommand("project.openInNewWindow", node => node.openFolder(true));    
+    // Open Project or Group
+    vscode.commands.registerCommand("project.open", node => { node.open(false, workspaceStoragePath); });
+    vscode.commands.registerCommand("project.openInNewWindow", node => { node.open(true, workspaceStoragePath); });
+    vscode.commands.registerCommand("group.open", async node => { await msg.showOpenGroupInfoMessage(context); node.open(false, workspaceStoragePath); });
+    vscode.commands.registerCommand("group.openInNewWindow", async node => { await msg.showOpenGroupInfoMessage(context); node.open(true, workspaceStoragePath); });
 }

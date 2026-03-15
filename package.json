@@ -1,6 +1,6 @@
 {
   "name": "pinned-projects",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "displayName": "Pinned Projects",
   "description": "Pin your local projects to side bar for quick access",
   "publisher": "simplerick",
@@ -35,6 +35,11 @@
 
   "activationEvents": [],
   "main": "./dist/extension.js",
+  "capabilities": {
+    "untrustedWorkspaces": { 
+      "supported": true
+    }
+  },
 
   "contributes": {
     "viewsContainers": {
@@ -82,6 +87,16 @@
       },
       {
         "command": "project.openInNewWindow",
+        "title": "Open in New Window",
+        "icon": "$(empty-window)"
+      },
+      {
+        "command": "group.open",
+        "title": "Open in Current Window",
+        "icon": "$(folder-opened)"
+      },
+      {
+        "command": "group.openInNewWindow",
         "title": "Open in New Window",
         "icon": "$(empty-window)"
       },
@@ -137,9 +152,19 @@
           "group": "inline@2"
         },
         {
+          "command": "group.open",
+          "when": "view == projects && viewItem == group-openable",
+          "group": "inline@3"
+        },
+        {
+          "command": "group.openInNewWindow",
+          "when": "view == projects && viewItem == group-openable",
+          "group": "inline@4"
+        },
+        {
           "submenu": "modify",
           "when": "view == projects && !config.pinnedProjects.lock",
-          "group": "inline@3"
+          "group": "inline@5"
         }
       ],
       "modify": [
@@ -150,12 +175,12 @@
         },
         {
           "command": "project.add",
-          "when": "view == projects && viewItem == group && !config.pinnedProjects.lock",
+          "when": "view == projects && (viewItem == group || viewItem == group-openable) && !config.pinnedProjects.lock",
           "group": "modification@2"
         },
         {
           "command": "group.add",
-          "when": "view == projects && viewItem == group && !config.pinnedProjects.lock",
+          "when": "view == projects && (viewItem == group || viewItem == group-openable) && !config.pinnedProjects.lock",
           "group": "modification@3"
         },
         {

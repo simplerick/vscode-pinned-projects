@@ -13,6 +13,10 @@ Add your favorite projects and then open any pinned folder with a single click, 
 
 <img src="media/pinned-projects-add-open.png">
 
+### Multi-Folder Workspaces
+
+To work with multiple folders in a single window, place projects into a group and open it.
+
 ### Easy Configuration 
 
 There's no need to open settings to configure your projects — all modifications can be done natively in the tree view.
