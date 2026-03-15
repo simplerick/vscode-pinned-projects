@@ -3,6 +3,9 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 
+const projectErrorIcon = new vscode.ThemeIcon('warning', new vscode.ThemeColor('editorWarning.foreground'));
+
+
 export class TreeNode {
 	id: number;
 	parent?: TreeNode;
@@ -17,7 +20,6 @@ export class TreeNode {
 	}
 
 	parseTreeItem(data: any): Group | Project {
-		// const stringId = String(id);
 		const {type, name, absolutePath, description, collapsibleState, ..._} = data;
 
 		switch (type) { 
@@ -32,22 +34,51 @@ export class TreeNode {
 		}
 	}
 
-	openFolder(newWindow: boolean = false) {
-		if (this.data instanceof Project) {
-			this.data.openFolder(newWindow);
-		}
-    }
-
 	rename(provider: any) {
 		vscode.window.showInputBox({
 			prompt: "Enter a new name",
-			value: this.data.label,
+			value: this.data.label as string,
 		}).then((newName) => {
 			if (newName) {
+				this.data.name = newName;
 				this.data.label = newName;
 				provider.refresh(this);
 			}
 		});
+	}
+
+	open(newWindow: boolean, workspaceStoragePath: string) {
+		let uri: vscode.Uri;
+
+		if (this.data instanceof Project) {
+			uri = vscode.Uri.file(this.data.absolutePath);
+		}
+		else {
+			// assume that group is non empty and has only valid project type chilren (openable)
+			let dirs = this.children.map(child => (child.data as Project).absolutePath);
+			const workspaceContent = {
+				folders: dirs.map(d => ({ path: d })),
+				settings: {}
+			};
+			const workspaceFilePath = path.join(workspaceStoragePath, `${this.data.label}.code-workspace`);
+			fs.writeFileSync(workspaceFilePath, JSON.stringify(workspaceContent, null, 2));
+			uri = vscode.Uri.file(workspaceFilePath);
+		}
+		
+		vscode.commands.executeCommand('vscode.openFolder', uri, newWindow);
+	}
+
+	checkOpenable() {
+		if (this.data instanceof Group) {
+			let openable = this.children.length > 0 && this.children.every(child =>
+				child.data instanceof Project && child.data.valid
+			);
+			if (openable) {
+				this.data.contextValue = `${this.data.type}-openable`;
+			} else {
+				this.data.contextValue = this.data.type
+			}
+		}
 	}
 }
 
@@ -57,12 +88,12 @@ export class Group extends vscode.TreeItem {
 	// iconPath = path.join(__filename, '..', '..', 'assets', 'group.svg');
 	contextValue?: string;
 
-	constructor(public label: string,
+	constructor(public name: string,
 				public collapsibleState?: vscode.TreeItemCollapsibleState,
-				type?: string,
+				public type?: string,
 				// public readonly description?: string,
 	) {
-		super(label, collapsibleState);
+		super(name, collapsibleState);
 		this.contextValue = type;
 		// this.tooltip = description;
 	}
@@ -77,13 +108,14 @@ export class Project extends vscode.TreeItem {
 
 	constructor(
         public absolutePath: string,
-		public label?: string,
+		public name?: string,
 		public description?: string,
-		type?: string
+		public type?: string
 	) {
-		// if label is not given take stem of absolutePath
-		label = label || path.basename(absolutePath);
+		let label = name || path.basename(absolutePath);
 		super(label, vscode.TreeItemCollapsibleState.None);
+
+		this.name = name;
         this.absolutePath = this.checkPath(absolutePath);
 		this.tooltip = `${this.absolutePath}`;
 		this.description = this.description;
@@ -96,13 +128,8 @@ export class Project extends vscode.TreeItem {
 			fs.accessSync(p);
 		} catch {
 			this.valid = false;
-			this.iconPath = new vscode.ThemeIcon('warning', new vscode.ThemeColor('editorWarning.foreground'));
+			this.iconPath = projectErrorIcon;
 		}
 		return p;
 	}
-
-    openFolder(newWindow: boolean = false) {
-        const uri = vscode.Uri.file(this.absolutePath);
-        vscode.commands.executeCommand('vscode.openFolder', uri, newWindow);
-    }
 }

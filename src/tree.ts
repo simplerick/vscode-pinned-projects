@@ -38,10 +38,10 @@ export class Tree extends TreeDragAndDropController implements vscode.TreeDataPr
 			return children;
 		}
 		if (node.data instanceof Group) {
-			return {type: node.data.contextValue, name: node.data.label, collapsibleState: node.data.collapsibleState, children: children};
+			return {type: node.data.type, name: node.data.name, collapsibleState: node.data.collapsibleState, children: children};
 		}
 		if (node.data instanceof Project) {
-			return {type: node.data.contextValue, name: node.data.label, absolutePath: node.data.absolutePath};
+			return {type: node.data.type, name: node.data.name, absolutePath: node.data.absolutePath};
 		}
 	}
 
@@ -51,6 +51,7 @@ export class Tree extends TreeDragAndDropController implements vscode.TreeDataPr
 	}
 
 	getTreeItem(element: TreeNode): vscode.TreeItem {
+		element.checkOpenable();
 		return element.data;
 	}
 
